@@ -16,6 +16,7 @@ namespace Bloggie.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // DB connection yapýldý . Bu Connection string üzerinden yaptýk
             builder.Services.AddDbContext<BloggieDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnectionString")));
             
             var app = builder.Build(); // builderlarý bunun üstüne koy
