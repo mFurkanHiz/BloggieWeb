@@ -1,3 +1,6 @@
+using Bloggie.Web.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Bloggie.Web
 {
     // Program.cs dosyasý uygulamanýn konfigürasyon ayarlarýnýn yapýldýðý, uygulamanýn baþladýðý dosyadýr.
@@ -13,7 +16,9 @@ namespace Bloggie.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            var app = builder.Build();
+            builder.Services.AddDbContext<BloggieDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnectionString")));
+            
+            var app = builder.Build(); // builderlarý bunun üstüne koy
 
             // Configure the HTTP request pipeline.
             // app. diye kullandýðýmýz request sürecindeki tüm özellikler aþaðýda tanýmlanmýþtýr. iþimize yarayacak tüm özeliklerin tamamýný da app. diyerek tanýmlýyor olacaðýz. Örneðin aþaðýda app.UseAuthantication() özelliði request pipeline ý tanýmlanmýþtýr. Bizler ise kimlik kontrolü yapmak istediðimizde Authantication özelliðini kullanýyor olacaðýz. Bunun için ileride app.UseAuthantication() isimli özelliði dahil edeceðiz.
