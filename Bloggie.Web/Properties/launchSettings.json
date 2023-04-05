@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "https": {
+    "Bloggiehttps": { // we changed https to Bloggiehttps // this will be working
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
