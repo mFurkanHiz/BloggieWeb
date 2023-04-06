@@ -56,7 +56,7 @@ namespace Bloggie.Web.Controllers
             // submit butonuna bastıktan sonra List sayfasına yönlendirildik
             return RedirectToAction("List");
         }
-
+        // List.cshtml
         // Taglari listeleme
         [HttpGet]
         public IActionResult List()
@@ -65,6 +65,28 @@ namespace Bloggie.Web.Controllers
             var tags = bloggieDbContext.Tags.ToList(); // DB deki tagsları listele
             return View(tags); // tags ları ListView a yani List.cshtml e yolluyoruz
         }
-        // List.cshtml
+
+        [HttpGet]
+        public IActionResult Edit(Guid id)
+        {
+            //// 1st method
+            //var tag = bloggieDbContext.Tags.Find(id);
+
+            // 2nd method
+            var tag = bloggieDbContext.Tags.FirstOrDefault(x => x.Id == id);
+
+            if(tag != null)
+            {
+                var editTagRequest = new EditTagRequest
+                {
+                    Id = tag.Id,
+                    Name = tag.Name,
+                    DisplayName = tag.DisplayName,
+                };
+                return View(editTagRequest);
+            }
+            return View(null);
+        }
+        
     }
 }
