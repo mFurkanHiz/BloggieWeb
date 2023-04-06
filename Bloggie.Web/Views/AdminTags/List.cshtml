@@ -18,7 +18,7 @@
                         <td>Id</td>
                         <td>Name</td>
                         <td>Display Name</td>
-                        <td></td>
+                        <td>Operations</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,10 +28,12 @@
                             <td>@item.Id</td>
                             <td>@item.Name</td>
                             <td>@item.DisplayName</td>
-                            <td class="d-flex justify-content-between">
-                                <a asp-action="Edit" class="btn btn-primary w-100 mx-2" asp-controller="AdminTags" asp-route-id="@item.Id">Edit</a>
-                                <form method="post">
-                                    <button asp-controller="AdminTags" asp-action="Delete" asp-route-id="@item.Id" type="submit" class="btn btn-danger w-100">Delete</button>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a asp-action="Edit" class="btn btn-primary " asp-controller="AdminTags" asp-route-id="@item.Id">Edit</a>
+                                    <button asp-controller="AdminTags" asp-action="Delete" form="myform" asp-route-id="@item.Id" type="submit" class="btn btn-danger ">Delete</button>
+                                </div>
+                                <form method="post" id=myform>
                                 </form>
                             </td>
                         </tr>
@@ -40,5 +42,8 @@
             </table>
         </div>
     }
+    else
+    {
+        <h1>There are no tags to display! (0)))</h1>
+    }
 </div>
-    
