@@ -117,5 +117,41 @@ namespace Bloggie.Web.Controllers
             }
             return View();
         }
+
+        //[HttpPost]
+        //public IActionResult Delete(EditTagRequest editTagRequest)
+        //{
+        //    var tag = bloggieDbContext.Tags.Find(editTagRequest.Id);
+        //    if(tag != null)
+        //    {
+        //        bloggieDbContext.Tags.Remove(tag);
+        //        bloggieDbContext.SaveChanges();
+
+        //        //show a success notification
+        //        return RedirectToAction("List");
+        //    }
+        //    // Showing notification error
+        //    return View();
+        //}
+
+        // 2. metot
+
+
+        [HttpPost]
+        public IActionResult Delete(Guid id)
+        {
+            var tag = bloggieDbContext.Tags.Find(id);
+            if (tag != null)
+            {
+                bloggieDbContext.Tags.Remove(tag);
+                bloggieDbContext.SaveChanges();
+
+                //show a success notification
+                return RedirectToAction("List");
+            }
+            //Showing notification error
+            return View();
+        }
+
     }
 }

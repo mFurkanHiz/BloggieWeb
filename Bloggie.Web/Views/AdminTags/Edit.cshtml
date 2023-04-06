@@ -26,7 +26,8 @@
             <input type="text" class="form-control" id="displayName" asp-for="DisplayName" />
         </div>
         <div class="mb-3">
-            <button type="submit" class="btn btn-dark">Update</button>
+            <button type="submit" class="btn btn-dark my-2">Update</button>
+            <button type="submit" asp-controller="AdminTags" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-dark ms-2">Delete</button>
         </div>
     </form>
 </div>
