@@ -52,7 +52,19 @@ namespace Bloggie.Web.Controllers
             bloggieDbContext.SaveChanges();
 
             // submit işlemi gerçekleştikten sonra bizi Add.cshtml de tutmasını istiyoruz
-            return View("Add");
+            // return View("Add");
+            // submit butonuna bastıktan sonra List sayfasına yönlendirildik
+            return RedirectToAction("List");
         }
+
+        // Taglari listeleme
+        [HttpGet]
+        public IActionResult List()
+        {
+            // Use dbcontext to read tags (tagleri okuyabilmek adına dbcontextimiz ile ilişki kurduk) Akabinde bu tagleri ait olan view sayfamıza yolladık (List.cshtml)
+            var tags = bloggieDbContext.Tags.ToList(); // DB deki tagsları listele
+            return View(tags); // tags ları ListView a yani List.cshtml e yolluyoruz
+        }
+        // List.cshtml
     }
 }
