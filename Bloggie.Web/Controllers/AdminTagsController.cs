@@ -66,6 +66,9 @@ namespace Bloggie.Web.Controllers
             return View(tags); // tags ları ListView a yani List.cshtml e yolluyoruz
         }
 
+        //Edit get metodu için view sayfamıza verilerin ulaştırılacağı bir view model hazırladık. Bu view model üzerinde id name ve display name olarak üç özellik tanımladık. Metodumuza parametre olarak Guid tipinde id yolladık. Ve cshtml dosyasında model olarak bu view modeli kullandık. Daha öncesinde list sayfasındaki edit butonunda asp-route-id olarak id tanımlaması yaptığımız için doğrudan bu idye ait olan veriler ekrana controllerın aşağıdaki hali sayesinde geliyor oldu. aşağıda parametre olarak gönderilen id ile veritabanı sorgusu yaparak bu idye denk gelen objeyi çağırmış olduk ve viewmodeldaki propertyler bu objeyle eşitlendi. View sayfası da model olarak bu viewmodeli kullandığı için verilerimiz get metoduyla otomatik olarak ilgili inputlara yüklenmiş oldu. 
+
+
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
@@ -87,6 +90,32 @@ namespace Bloggie.Web.Controllers
             }
             return View(null);
         }
-        
+
+        //Post işlemi için ilgili edit sayfamızda model olarak kullandığımız edittagrequest isimli viewmodelımızı yine kullanıyor olacağız. Çünkü formumuz post işlemi submit etmektedir. Bu yüzden aynı isimdeki IActionResult üzerindeki HttpPost olan kısım çalışıyor olacaktır. Öncelikle Veritabanı modelimiz olan Tag model üzerinden yeni bir nesne üretim propertylerini viewmodella eşitliyoruz. Sonrasında bu idye id olan veritabanı nesnemizi bulmak için find metodu kullanıyoruz. Bu bu id ait olan nesnenin veritabanındaki prpertylerini yeni oluşturmuş olduğumuz tag nesnesinin propertyleriyle eşitleyerek yeni atamayı yapmış oluyoruz. Akabinde savechanges diyerek veritabanını güncellemiş oluyoruz.
+
+
+        [HttpPost]
+        public IActionResult Edit(EditTagRequest editTagRequest) 
+        {
+            var tag = new Tag
+            {
+                Id = editTagRequest.Id,
+                Name = editTagRequest.Name,
+                DisplayName = editTagRequest.DisplayName,
+
+            };
+
+            var existingTag = bloggieDbContext.Tags.Find(tag.Id);
+
+            if(existingTag != null)
+            {
+                existingTag.Name = tag.Name; 
+                existingTag.DisplayName = tag.DisplayName;
+
+                bloggieDbContext.SaveChanges();
+                return RedirectToAction("List");
+            }
+            return View();
+        }
     }
 }
