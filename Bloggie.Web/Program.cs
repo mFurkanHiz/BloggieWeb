@@ -21,7 +21,8 @@ namespace Bloggie.Web
             builder.Services.AddDbContext<BloggieDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnectionString")));
 
             builder.Services.AddScoped<ITagInterface, TagRepository>(); // interfacelerin yaþayacaðý zaman dilimi. yaþam döngüsü. Request atýldýðýnda çalýþýyor. request bittinde bitiyor.
-            
+            builder.Services.AddScoped<IBlogPostInterface, BlogPostRepository>();
+
             var app = builder.Build(); // builderlarý bunun üstüne koy
 
             // Configure the HTTP request pipeline.
