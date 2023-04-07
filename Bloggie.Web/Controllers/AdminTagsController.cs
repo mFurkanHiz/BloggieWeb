@@ -1,6 +1,7 @@
 ﻿using Bloggie.Web.Data;
 using Bloggie.Web.Models.Domain;
 using Bloggie.Web.Models.ViewModels;
+using Bloggie.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,13 +9,24 @@ namespace Bloggie.Web.Controllers
 {
     public class AdminTagsController : Controller
     {
-        private readonly BloggieDbContext bloggieDbContext;
-        // DbContext için dependency injection işlemi gerçekleştirildi
 
-        public AdminTagsController(BloggieDbContext bloggieDbContext)
+        //private readonly BloggieDbContext bloggieDbContext;
+        //// DbContext için dependency injection işlemi gerçekleştirildi
+
+        //public AdminTagsController(BloggieDbContext bloggieDbContext)
+        //{
+        //    this.bloggieDbContext = bloggieDbContext;
+        //}
+
+        private readonly ITagInterface tagRepository;
+
+        public AdminTagsController(ITagInterface tagRepository)
         {
-            this.bloggieDbContext = bloggieDbContext;
+            this.tagRepository = tagRepository;
         }
+
+
+
 
         // Yapmış olduğumuz MVC routing şekli şunun gibi olaaktır.
         // https://localhost:1544/AdminTags/Add
@@ -49,8 +61,11 @@ namespace Bloggie.Web.Controllers
                 DisplayName = addTagRequest.DisplayName,
             };
 
-            await bloggieDbContext.Tags.AddAsync(tag);
-            await bloggieDbContext.SaveChangesAsync();
+            //await bloggieDbContext.Tags.AddAsync(tag);
+            //await bloggieDbContext.SaveChangesAsync();
+
+            await tagRepository.AddAsync(tag);
+
 
             // submit işlemi gerçekleştikten sonra bizi Add.cshtml de tutmasını istiyoruz
             // return View("Add");
@@ -63,7 +78,10 @@ namespace Bloggie.Web.Controllers
         public async Task<IActionResult> List()
         {
             // Use dbcontext to read tags (tagleri okuyabilmek adına dbcontextimiz ile ilişki kurduk) Akabinde bu tagleri ait olan view sayfamıza yolladık (List.cshtml)
-            var tags = await bloggieDbContext.Tags.ToListAsync(); // DB deki tagsları listele
+            //var tags = await bloggieDbContext.Tags.ToListAsync(); // DB deki tagsları listele
+
+            var tags = await tagRepository.GetAllAsync();
+
             return View(tags); // tags ları ListView a yani List.cshtml e yolluyoruz
         }
 
@@ -76,10 +94,24 @@ namespace Bloggie.Web.Controllers
             //// 1st method
             //var tag = bloggieDbContext.Tags.Find(id);
 
-            // 2nd method
-            var tag = await bloggieDbContext.Tags.FirstOrDefaultAsync(x => x.Id == id);
+            //// 2nd method
+            //var tag = await bloggieDbContext.Tags.FirstOrDefaultAsync(x => x.Id == id);
 
-            if(tag != null)
+            //if(tag != null)
+            //{
+            //    var editTagRequest = new EditTagRequest
+            //    {
+            //        Id = tag.Id,
+            //        Name = tag.Name,
+            //        DisplayName = tag.DisplayName,
+            //    };
+            //    return View(editTagRequest);
+            //}
+            //return View(null);
+
+            var tag = await tagRepository.GetAsync(id);
+
+            if (tag != null)
             {
                 var editTagRequest = new EditTagRequest
                 {
@@ -106,17 +138,30 @@ namespace Bloggie.Web.Controllers
 
             };
 
-            var existingTag = await bloggieDbContext.Tags.FindAsync(tag.Id);
+            //var existingTag = await bloggieDbContext.Tags.FindAsync(tag.Id);
 
-            if(existingTag != null)
+            //if(existingTag != null)
+            //{
+            //    existingTag.Name = tag.Name; 
+            //    existingTag.DisplayName = tag.DisplayName;
+
+            //    await bloggieDbContext.SaveChangesAsync();
+            //    return RedirectToAction("List");
+            //}
+            //return View();
+
+
+            var updateTag = await tagRepository.UpdateAsync(tag);
+
+            if(updateTag != null)
             {
-                existingTag.Name = tag.Name; 
-                existingTag.DisplayName = tag.DisplayName;
-
-                await bloggieDbContext.SaveChangesAsync();
+                // Success notification 
                 return RedirectToAction("List");
+            } else
+            {
+                // error notification
             }
-            return View();
+                return View();
         }
 
         //[HttpPost]
@@ -141,16 +186,25 @@ namespace Bloggie.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var tag = await bloggieDbContext.Tags.FindAsync(id);
-            if (tag != null)
-            {
-                bloggieDbContext.Tags.Remove(tag);
-                await bloggieDbContext.SaveChangesAsync();
+            //var tag = await bloggieDbContext.Tags.FindAsync(id);
+            //if (tag != null)
+            //{
+            //    bloggieDbContext.Tags.Remove(tag);
+            //    await bloggieDbContext.SaveChangesAsync();
 
-                //show a success notification
+            //    //show a success notification
+            //    return RedirectToAction("List");
+            //}
+            ////Showing notification error
+            //return View();
+
+            var deletedTag = await tagRepository.DeleteAsync(id);
+            if(deletedTag != null)
+            {
+                // show a success notification 
                 return RedirectToAction("List");
             }
-            //Showing notification error
+            // Showing notification error
             return View();
         }
 

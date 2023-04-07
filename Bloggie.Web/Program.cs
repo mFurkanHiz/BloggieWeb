@@ -1,4 +1,5 @@
 using Bloggie.Web.Data;
+using Bloggie.Web.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bloggie.Web
@@ -18,6 +19,8 @@ namespace Bloggie.Web
 
             // DB connection yapýldý . Bu Connection string üzerinden yaptýk
             builder.Services.AddDbContext<BloggieDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnectionString")));
+
+            builder.Services.AddScoped<ITagInterface, TagRepository>(); // interfacelerin yaþayacaðý zaman dilimi. yaþam döngüsü. Request atýldýðýnda çalýþýyor. request bittinde bitiyor.
             
             var app = builder.Build(); // builderlarý bunun üstüne koy
 
